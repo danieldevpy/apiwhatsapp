@@ -1,0 +1,46 @@
+from fastapi import FastAPI, Response
+from src.application.infra.selenium.driver_controller import DriverController
+from src.application.infra.selenium.wpp_controller import WhatsappController
+from src.application.usecase import wpp_case
+from src.domain.entity.message import RequestMessage
+from src.application.infra.selenium.qrcode_controller import QrCodeController
+
+app = FastAPI()
+driver_controller = DriverController('https://web.whatsapp.com/', cache=True, hadless=True)
+qr_code = False
+
+@app.post('/notification/wpp')
+def send_message(request: RequestMessage):
+    if qr_code:
+        return Response(content='Qr code não confirmado', status_code=400)
+    try:
+        repository = WhatsappController(driver_controller)
+        wpp_case.send_message_wpp(repository, request.create_message())
+        return Response(content="Operação bem-sucedida", status_code=200)
+    except Exception as e:
+        return Response(content=str(e), status_code=400)
+
+@app.post('/qrcode/get')
+def get_qrcode():
+    global driver_controller, qr_code
+    qr_code = True
+    driver_controller.driver.quit()
+    driver_controller = DriverController('https://web.whatsapp.com/', cache=True, hadless=False, remove_data=True)
+    qrcode_repository = QrCodeController(driver_controller)
+    image_data = qrcode_repository.get_image()
+    return Response(content=image_data, media_type="image/png")
+
+@app.post('/qrcode/confirm')
+def confirm_qrcode():
+    global driver_controller, qr_code
+    qrcode_repository = QrCodeController(driver_controller)
+    response = qrcode_repository.check_page()
+    if response:
+        qr_code = False
+        driver_controller.driver.quit()
+        driver_controller = DriverController('https://web.whatsapp.com/', cache=True, hadless=True)
+        return Response(content="configurado com sucesso!", status_code=200)
+    else:
+        return Response(content="Aguarde um pouco e tente novamente, ou tente reconectar!", status_code=200)
+
+
