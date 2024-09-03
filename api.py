@@ -1,4 +1,5 @@
 from fastapi import FastAPI, Response
+from fastapi.responses import JSONResponse
 from src.application.infra.selenium.driver_controller import DriverController
 from src.application.infra.selenium.wpp_controller import WhatsappController
 from src.application.usecase import wpp_case
@@ -23,12 +24,15 @@ def send_message(request: RequestMessage):
 @app.post('/qrcode/get')
 def get_qrcode():
     global driver_controller, qr_code
-    qr_code = True
-    driver_controller.driver.quit()
-    driver_controller = DriverController('https://web.whatsapp.com/', cache=True, hadless=False, remove_data=True)
-    qrcode_repository = QrCodeController(driver_controller)
-    image_data = qrcode_repository.get_image()
-    return Response(content=image_data, media_type="image/png")
+    try:
+        qr_code = True
+        driver_controller.driver.quit()
+        driver_controller = DriverController('https://web.whatsapp.com/', cache=True, hadless=False, remove_data=True)
+        qrcode_repository = QrCodeController(driver_controller)
+        image_data = qrcode_repository.get_image()
+        return Response(content=image_data, media_type="image/png")
+    except Exception as e:
+        return JSONResponse({"msg": str(e)})
 
 @app.post('/qrcode/confirm')
 def confirm_qrcode():
