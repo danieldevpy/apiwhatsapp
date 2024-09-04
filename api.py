@@ -17,7 +17,7 @@ def send_message(request: RequestMessage):
     try:
         repository = WhatsappController(driver_controller)
         wpp_case.send_message_wpp(repository, request.create_message())
-        return Response(content="Operação bem-sucedida", status_code=200)
+        return JSONResponse({"msg": "Operação bem-sucedida"})
     except Exception as e:
         return Response(content=str(e), status_code=400)
 
