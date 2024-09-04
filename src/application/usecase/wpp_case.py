@@ -3,7 +3,9 @@ from src.domain.entity.message import Message
 
 
 def send_message_wpp(repository: WhatsappRepository, message: Message):
-    if len(message.number) != 11:
+    if message.number == 'Ti Cisbaf':
+        pass
+    elif len(message.number) != 11:
         raise Exception("Número incorreto!")
     elif len(message.message) <= 0:
         raise Exception("Envie alguma mensagem")
