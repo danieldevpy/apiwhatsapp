@@ -15,6 +15,7 @@ class DriverController:
             shutil.rmtree('~')
             time.sleep(1)
         chrome_options = Options()
+        chrome_options.add_argument("--start-maximized")
         if hadless:
             chrome_options.add_argument("--headless=new")
         if cache:

@@ -3,7 +3,6 @@ from src.application.repository.wpp_repository import WhatsappRepository
 from src.domain.entity.message import Message
 from src.application.infra.selenium import elements
 from selenium.webdriver.common.keys import Keys
-import time
 
 def retry(fun):
     def wrapper(self, *args, **kwargs):
@@ -12,8 +11,9 @@ def retry(fun):
                 fun(self, *args, **kwargs)
                 break
             except:
-                print('Tentativa', t)
-
+                pass
+        if t == 4:
+            raise Exception("Tentativa máxima excedida!")
     return wrapper
 
 class WhatsappController(WhatsappRepository):
