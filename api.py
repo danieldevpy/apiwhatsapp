@@ -19,7 +19,7 @@ def send_message(request: RequestMessage):
         wpp_case.send_message_wpp(repository, request.create_message())
         return JSONResponse({"msg": "Operação bem-sucedida"})
     except Exception as e:
-        return Response(content=str(e), status_code=400)
+        return JSONResponse({"msg": str(e)}, 400)
 
 @app.post('/qrcode/get')
 def get_qrcode():
