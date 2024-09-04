@@ -25,6 +25,7 @@ class WhatsappController(WhatsappRepository):
         self.__open_new_contact__(message.number)
         self.__write_message__(message.message)
         self.__get_last_message__(message.message)
+        self.__esc__()
 
     @retry
     def __open_new_contact__(self, number: str):
@@ -51,6 +52,11 @@ class WhatsappController(WhatsappRepository):
         last_element = message_elements[-1]
         if not last_element.text == message:
             raise Exception("Algum erro ao validar a mensage")
+    
+    def __esc__(self):
+        body = self.driver_controller.get_element(elements.body)
+        body.send_keys(Keys.ESCAPE)
+
 
     
     

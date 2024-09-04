@@ -38,3 +38,9 @@ page_wpp = Element(
   type=By.XPATH,
   time=3
 )
+
+body = Element(
+  "body",
+  element_search='body',
+  type=By.TAG_NAME
+)
