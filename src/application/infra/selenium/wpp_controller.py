@@ -12,8 +12,8 @@ def retry(fun):
                 break
             except:
                 pass
-        if t == 4:
-            raise Exception("Tentativa máxima excedida!")
+            if t == 3:
+                raise Exception(f"Tentativa máxima excedida na função '{fun.__name__}'!")
     return wrapper
 
 class WhatsappController(WhatsappRepository):
@@ -22,10 +22,14 @@ class WhatsappController(WhatsappRepository):
         self.driver_controller = driver_controller
 
     def send_message(self, message: Message):
-        self.__open_new_contact__(message.number)
-        self.__write_message__(message.message)
-        self.__get_last_message__(message.message)
-        self.__esc__()
+        try:
+            self.__open_new_contact__(message.number)
+            self.__write_message__(message.message)
+            self.__get_last_message__(message.message)
+            self.__esc__()
+        except Exception as e:
+            self.__esc__()
+            raise e
 
     @retry
     def __open_new_contact__(self, number: str):
@@ -50,7 +54,7 @@ class WhatsappController(WhatsappRepository):
     def __get_last_message__(self, message: str):
         message_elements = self.driver_controller.get_elements(elements.messages_conversation)
         last_element = message_elements[-1]
-        if not last_element.text == message:
+        if not last_element.text in message:
             raise Exception("Algum erro ao validar a mensage")
     
     def __esc__(self):
