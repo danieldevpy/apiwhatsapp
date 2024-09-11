@@ -4,7 +4,7 @@ from src.domain.entity.message import Message
 class WhatsappRepository(ABC):
 
     @abstractmethod
-    def send_message(self, message: Message):
+    def send_message(self, message: Message, confirm: True):
         raise NotImplemented
     
 

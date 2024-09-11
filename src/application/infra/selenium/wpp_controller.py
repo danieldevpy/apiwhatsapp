@@ -21,11 +21,12 @@ class WhatsappController(WhatsappRepository):
     def __init__(self, driver_controller: DriverController) -> None:
         self.driver_controller = driver_controller
 
-    def send_message(self, message: Message):
+    def send_message(self, message: Message, confirm: True):
         try:
             self.__open_new_contact__(message.number)
             self.__write_message__(message.message)
-            self.__get_last_message__(message.message)
+            if confirm:
+                self.__get_last_message__(message.message)
             self.__esc__()
         except Exception as e:
             self.__esc__()
