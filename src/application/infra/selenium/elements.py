@@ -19,6 +19,13 @@ input_write_message = Element(
   type=By.XPATH
 )
 
+span_message = Element(
+  "span message",
+  element_search='//*[@id="main"]/footer/div[1]/div/span[2]/div/div[2]/div[1]/div/div/p/span',
+  type=By.XPATH
+)
+
+
 messages_conversation = Element(
   "all message",
   element_search="_akbu",

@@ -10,10 +10,10 @@ def retry(fun):
             try:
                 fun(self, *args, **kwargs)
                 break
-            except:
-                pass
-            if t == 3:
-                raise Exception(f"Tentativa máxima excedida na função '{fun.__name__}'!")
+            except Exception as e:
+                if t == 3:
+                    raise Exception(f"Tentativa máxima excedida na função '{fun.__name__}'!\n" + str(e))
+
     return wrapper
 
 class WhatsappController(WhatsappRepository):
@@ -32,16 +32,23 @@ class WhatsappController(WhatsappRepository):
 
     @retry
     def __open_new_contact__(self, number: str):
-        self.driver_controller.click_element(elements.input_for_new_conversations)
-        input_active = self.driver_controller.get_element_active()
-        input_active.send_keys(number)
-        self.driver_controller.await_element(elements.info_not_in_list_contact)
-        input_active.send_keys(Keys.ENTER)
+        try:
+            self.driver_controller.click_element(elements.input_for_new_conversations)
+            input_active = self.driver_controller.get_element_active()
+            input_active.send_keys(number)
+            self.driver_controller.await_element(elements.info_not_in_list_contact)
+            input_active.send_keys(Keys.ENTER)
+        except Exception as e:
+            self.__esc__()
+            raise e
 
     @retry
     def __write_message__(self, message: str):
-        self.driver_controller.set_value(elements.input_write_message, message, True)
-        # print(self.driver_controller.get_element(elements.input_write_message).text)   
+        input = self.driver_controller.get_element(elements.input_write_message)
+        if input.text:
+            for _ in range(len(input.text)):
+                input.send_keys(Keys.BACK_SPACE)
+        input.send_keys(message, Keys.ENTER)
 
     @retry
     def __get_messages__(self):
@@ -59,6 +66,7 @@ class WhatsappController(WhatsappRepository):
     
     def __esc__(self):
         body = self.driver_controller.get_element(elements.body)
+        body.click()
         body.send_keys(Keys.ESCAPE)
 
 
