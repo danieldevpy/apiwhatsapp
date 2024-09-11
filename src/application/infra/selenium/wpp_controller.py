@@ -21,12 +21,10 @@ class WhatsappController(WhatsappRepository):
     def __init__(self, driver_controller: DriverController) -> None:
         self.driver_controller = driver_controller
 
-    def send_message(self, message: Message, confirm: True):
+    def send_message(self, message: Message):
         try:
             self.__open_new_contact__(message.number)
             self.__write_message__(message.message)
-            if confirm:
-                self.__get_last_message__(message.message)
             self.__esc__()
         except Exception as e:
             self.__esc__()
@@ -43,7 +41,8 @@ class WhatsappController(WhatsappRepository):
     @retry
     def __write_message__(self, message: str):
         self.driver_controller.set_value(elements.input_write_message, message, True)
-    
+        # print(self.driver_controller.get_element(elements.input_write_message).text)   
+
     @retry
     def __get_messages__(self):
         message_elements = self.driver_controller.get_elements(elements.messages_conversation)

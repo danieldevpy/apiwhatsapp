@@ -5,7 +5,7 @@ from src.domain.entity.message import Message
 
 def send_message_wpp(repository: WhatsappRepository, message: Message):
     if message.number == 'Ti Cisbaf':
-        return repository.send_message(message, confirm=False) 
+        pass
     elif len(message.number) != 11:
         raise Exception("Número incorreto!")
     elif len(message.message) <= 0:
