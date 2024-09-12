@@ -15,7 +15,7 @@ info_not_in_list_contact = Element(
 
 input_write_message = Element(
   "input message",
-  element_search='//*[@id="main"]/footer/div[1]/div/span[2]/div/div[2]/div[1]',
+  element_search='//*[@id="main"]/footer/div[1]/div/span[2]/div/div[2]/div[1]/div/div[1]/p',
   type=By.XPATH
 )
 
