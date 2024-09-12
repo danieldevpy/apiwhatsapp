@@ -3,6 +3,7 @@ from src.application.repository.wpp_repository import WhatsappRepository
 from src.domain.entity.message import Message
 from src.application.infra.selenium import elements
 from selenium.webdriver.common.keys import Keys
+import time
 
 def retry(fun):
     def wrapper(self, *args, **kwargs):
@@ -36,7 +37,7 @@ class WhatsappController(WhatsappRepository):
             self.driver_controller.click_element(elements.input_for_new_conversations)
             input_active = self.driver_controller.get_element_active()
             input_active.send_keys(number)
-            self.driver_controller.await_element(elements.info_not_in_list_contact)
+            time.sleep(2)
             input_active.send_keys(Keys.ENTER)
         except Exception as e:
             self.__esc__()
