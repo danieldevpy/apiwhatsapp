@@ -7,7 +7,7 @@ from src.domain.entity.message import RequestMessage
 from src.application.infra.selenium.qrcode_controller import QrCodeController
 
 app = FastAPI()
-driver_controller = DriverController('https://web.whatsapp.com/', cache=True, hadless=True)
+driver_controller = DriverController('https://web.whatsapp.com/', cache=True, hadless=False)
 qr_code = False
 
 @app.post('/notification/wpp')
