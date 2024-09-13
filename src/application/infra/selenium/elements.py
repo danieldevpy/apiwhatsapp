@@ -44,3 +44,17 @@ body = Element(
   element_search='body',
   type=By.TAG_NAME
 )
+
+
+name_header_two = Element(
+  "name header two",
+  element_search='//*[@id="main"]/header/div[2]/div[1]/div/span' ,
+  type=By.XPATH
+)
+
+name_header = Element(
+  name="name header",
+  element_search='//*[@id="main"]/header/div[2]/div/div/div/span',
+  type=By.XPATH,
+  element_retry = name_header_two
+) 

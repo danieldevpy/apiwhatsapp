@@ -29,8 +29,10 @@ class DriverController:
             EC.visibility_of_element_located((element.type, element.element_search))
             )
         except:
-            raise Exception(f'Elemento {element.name} não encontrado')
-        
+            if not element.element_retry:
+                raise Exception(f'Elemento {element.name} não encontrado')
+            return self.get_element(element.element_retry)
+
     def get_elements(self, element: Element):
         try:
            return WebDriverWait(self.driver, element.time).until(

@@ -34,11 +34,15 @@ class WhatsappController(WhatsappRepository):
     @retry
     def __open_new_contact__(self, number: str):
         try:
-            self.driver_controller.click_element(elements.input_for_new_conversations)
-            input_active = self.driver_controller.get_element_active()
-            input_active.send_keys(number)
-            time.sleep(2)
-            input_active.send_keys(Keys.ENTER)
+            element_search = elements.Element("teste", f'._ak8q span[title="{number}"]', elements.By.CSS_SELECTOR)
+            try:
+                element = self.driver_controller.get_element(element_search)
+            except:
+                self.driver_controller.click_element(elements.input_for_new_conversations)
+                input_active = self.driver_controller.get_element_active()
+                input_active.send_keys(number)
+                element = self.driver_controller.get_element(element_search)
+            element.click()
         except Exception as e:
             self.__esc__()
             raise e
