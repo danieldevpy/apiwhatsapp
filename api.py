@@ -5,21 +5,26 @@ from src.application.infra.selenium.wpp_controller import WhatsappController
 from src.application.usecase import wpp_case
 from src.domain.entity.message import RequestMessage
 from src.application.infra.selenium.qrcode_controller import QrCodeController
+import threading
 
 app = FastAPI()
-driver_controller = DriverController('https://web.whatsapp.com/', cache=True, hadless=True)
+driver_controller = DriverController('https://web.whatsapp.com/', cache=True, hadless=False)
 qr_code = False
+message_lock = threading.Lock()  # Cria um lock para controlar o acesso
 
 @app.post('/notification/wpp')
 def send_message(request: RequestMessage):
+    global qr_code
     if qr_code:
         return Response(content='Qr code não confirmado', status_code=400)
-    try:
-        repository = WhatsappController(driver_controller)
-        wpp_case.send_message_wpp(repository, request.create_message())
-        return JSONResponse({"msg": "Operação bem-sucedida"})
-    except Exception as e:
-        return JSONResponse({"msg": str(e)}, 400)
+    
+    with message_lock:
+        try:
+            repository = WhatsappController(driver_controller)
+            wpp_case.send_message_wpp(repository, request.create_message())
+            return JSONResponse({"msg": "Operação bem-sucedida"})
+        except Exception as e:
+            return JSONResponse({"msg": str(e)}, 400)
 
 @app.post('/qrcode/get')
 def get_qrcode():
@@ -46,5 +51,3 @@ def confirm_qrcode():
         return Response(content="configurado com sucesso!", status_code=200)
     else:
         return Response(content="Aguarde um pouco e tente novamente, ou tente reconectar!", status_code=200)
-
-

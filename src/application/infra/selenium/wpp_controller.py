@@ -42,7 +42,8 @@ class WhatsappController(WhatsappRepository):
                 input_active = self.driver_controller.get_element_active()
                 input_active.send_keys(number)
                 element = self.driver_controller.get_element(element_search)
-            element.click()
+            finally:
+                element.click()
         except Exception as e:
             self.__esc__()
             raise e
