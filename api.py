@@ -8,7 +8,7 @@ from src.application.infra.selenium.qrcode_controller import QrCodeController
 import threading
 
 app = FastAPI()
-driver_controller = DriverController('https://web.whatsapp.com/', cache=True, hadless=False)
+driver_controller = DriverController('https://web.whatsapp.com/', cache=True, hadless=True)
 qr_code = False
 message_lock = threading.Lock()  # Cria um lock para controlar o acesso
 
